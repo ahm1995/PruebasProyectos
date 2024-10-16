@@ -1,22 +1,24 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-interface PrivateRouteProps {
-  children: React.ReactNode;
-  role: 'admin' | 'user';
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, role }) => {
+const PrivateRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
 
-  // Aquí puedes validar el token y obtener el rol desde localStorage o decodificar el token
-  const userRole = role; // Aquí asumimos que el rol viene directamente
-
-  if (!token || userRole !== role) {
+  // Si no hay token, redirige al login
+  if (!token) {
     return <Navigate to="/login" />;
   }
 
-  return <>{children}</>;
+  // Decodificar el token para obtener el rol
+  const decodedToken = JSON.parse(atob(token.split('.')[1]));
+  const { permisos } = decodedToken;
+
+  // Verificar si el rol coincide con el requerido
+  if (permisos !== requiredRole) {
+    return <Navigate to="/login" />;
+  }
+
+  // Si el rol es correcto, renderiza el componente hijo
+  return children;
 };
 
 export default PrivateRoute;
