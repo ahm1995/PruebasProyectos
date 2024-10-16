@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');  // Para el logging de peticiones HTTP
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 // Cargar configuración de variables de entorno
 dotenv.config();
@@ -20,6 +21,11 @@ app.use(morgan('dev'));
 
 // Middleware para parsear JSON de las solicitudes
 app.use(express.json());
+
+app.use(cors());
+
+app.options('*', cors());
+
 
 // Conectar a MongoDB
 mongoose.connect(MONGODB_URI)

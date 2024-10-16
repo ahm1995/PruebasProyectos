@@ -66,19 +66,20 @@ exports.loginUser = async (req, res) => {
       process.env.JWT_SECRET
     );
 
+    console.log("Usuario logueado:", user);
+    console.log("Rol del usuario:", user.permisos);
+
     // Responder con el token y los datos del usuario
-    res
-      .status(200)
-      .json({
-        message: "Inicio de sesión exitoso",
-        token,
-        user: {
-          id: user._id,
-          nombre: user.nombre,
-          correo: user.correo,
-          permisos: user.permisos,
-        },
-      });
+    res.status(200).json({
+      message: "Inicio de sesión exitoso",
+      token,
+      user: {
+        id: user._id,
+        nombre: user.nombre,
+        correo: user.correo,
+        permisos: user.permisos,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error al iniciar sesión", error });
   }
