@@ -5,34 +5,52 @@ const User = require("../models/userModel");
 // Crear un nuevo usuario
 exports.createUser = async (req, res) => {
   try {
-    const { nombre, edad, correo, contraseña, permisos } = req.body;
+    const {
+      firstName,
+      lastName,
+      birthday,
+      phoneNumber,
+      email,
+      password,
+      userRole,
+    } = req.body;
 
     // Validaciones básicas
-    if (!nombre || !edad || !correo || !contraseña || !permisos) {
+    if (
+      !firstName ||
+      !lastName ||
+      !birthday ||
+      !phoneNumber ||
+      !email ||
+      !password ||
+      !userRole
+    ) {
       return res
         .status(400)
         .json({ message: "Todos los campos son obligatorios" });
     }
 
-    // Verificar si el correo ya está registrado
-    const userExists = await User.findOne({ correo });
+    // Verificar si el email ya está registrado
+    const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: "El correo ya está registrado" });
+      return res.status(400).json({ message: "El email ya está registrado" });
     }
 
-    // Cifrar la contraseña
+    // Cifrar la password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(contraseña, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Crear el nuevo usuario
     const newUser = new User({
-      nombre,
-      edad,
-      correo,
-      contraseña: hashedPassword,
-      permisos,
-      fechaCreacion: new Date(),
-      activo: true,
+      firstName,
+      lastName,
+      birthday,
+      phoneNumber,
+      email,
+      password: hashedPassword,
+      userRole,
+      registrationDate: new Date(),
+      status: true,
     });
 
     // Guardar el usuario en la base de datos
@@ -46,28 +64,28 @@ exports.createUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const { correo, contraseña } = req.body;
+    const { email, password } = req.body;
 
     // Verificar si el usuario existe
-    const user = await User.findOne({ correo });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "El usuario no existe" });
     }
 
-    // Verificar si la contraseña es correcta
-    const isMatch = await bcrypt.compare(contraseña, user.contraseña);
+    // Verificar si la password es correcta
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Contraseña incorrecta" });
     }
 
     // Crear token JWT
     const token = jwt.sign(
-      { id: user._id, permisos: user.permisos },
+      { id: user._id, userRole: user.userRole },
       process.env.JWT_SECRET
     );
 
     console.log("Usuario logueado:", user);
-    console.log("Rol del usuario:", user.permisos);
+    console.log("Rol del usuario:", user.userRole);
 
     // Responder con el token y los datos del usuario
     res.status(200).json({
@@ -75,9 +93,13 @@ exports.loginUser = async (req, res) => {
       token,
       user: {
         id: user._id,
-        nombre: user.nombre,
-        correo: user.correo,
-        permisos: user.permisos,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        birthday: user.birthday,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        userRole: user.userRole,
+        status: user.status,
       },
     });
   } catch (error) {
@@ -111,7 +133,7 @@ exports.getUserById = async (req, res) => {
 // Modificar un usuario por ID (solo admins)
 exports.updateUser = async (req, res) => {
   try {
-    const { nombre, edad, correo, permisos, activo } = req.body;
+    const { firstName, lastName, email, userRole, status } = req.body;
 
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -119,11 +141,12 @@ exports.updateUser = async (req, res) => {
     }
 
     // Actualizar los datos del usuario, excepto la fecha de creación
-    user.nombre = nombre || user.nombre;
-    user.edad = edad || user.edad;
-    user.correo = correo || user.correo;
-    user.permisos = permisos || user.permisos;
-    user.activo = activo !== undefined ? activo : user.activo;
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.phoneNumber = phoneNumber || user.phoneNumber;
+    user.email = email || user.email;
+    user.userRole = userRole || user.userRole;
+    user.status = status !== undefined ? status : user.status;
 
     await user.save();
 

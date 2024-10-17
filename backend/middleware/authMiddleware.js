@@ -22,8 +22,8 @@ exports.verifyToken = (req, res, next) => {
 
 // Middleware para verificar si el usuario es admin
 exports.verifyAdmin = (req, res, next) => {
-  if (req.user.permisos !== 'admin') {
-    return res.status(403).json({ message: 'Acceso denegado: se requieren permisos de administrador' });
+  if (req.user.userRole !== 'admin') {
+    return res.status(403).json({ message: 'Acceso denegado: se requieren userRole de administrador' });
   }
   next();
 };
