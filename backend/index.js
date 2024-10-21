@@ -36,6 +36,10 @@ mongoose.connect(MONGODB_URI)
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
+// Rutas de productos
+const productRoutes = require('./routes/productRoutes');
+app.use('/api/product', productRoutes);
+
 // Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

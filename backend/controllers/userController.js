@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-
+const { addLoginRecord } = require("../services/loggingRecords");
 // Crear un nuevo usuario
 exports.createUser = async (req, res) => {
   try {
@@ -84,9 +84,6 @@ exports.loginUser = async (req, res) => {
       process.env.JWT_SECRET
     );
 
-    console.log("Usuario logueado:", user);
-    console.log("Rol del usuario:", user.userRole);
-
     // Responder con el token y los datos del usuario
     res.status(200).json({
       message: "Inicio de sesión exitoso",
@@ -102,6 +99,9 @@ exports.loginUser = async (req, res) => {
         status: user.status,
       },
     });
+
+
+    addLoginRecord(user._id, User);
   } catch (error) {
     res.status(500).json({ message: "Error al iniciar sesión", error });
   }
@@ -124,7 +124,7 @@ exports.getUserById = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    res.json(user);
+    return res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el usuario", error });
   }
@@ -133,20 +133,20 @@ exports.getUserById = async (req, res) => {
 // Modificar un usuario por ID (solo admins)
 exports.updateUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, userRole, status } = req.body;
-
+    const { firstName, lastName, phoneNumber, email, userRole, status } =
+      req.body;
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
     // Actualizar los datos del usuario, excepto la fecha de creación
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
-    user.phoneNumber = phoneNumber || user.phoneNumber;
-    user.email = email || user.email;
-    user.userRole = userRole || user.userRole;
-    user.status = status !== undefined ? status : user.status;
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (email !== undefined) user.email = email;
+    if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
+    if (userRole !== undefined) user.userRole = userRole;
+    if (status !== undefined) user.status = status;
 
     await user.save();
 

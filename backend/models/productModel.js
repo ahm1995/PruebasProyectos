@@ -74,6 +74,10 @@ const productSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
   },
+  status: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const Product = mongoose.model("Product", productSchema);

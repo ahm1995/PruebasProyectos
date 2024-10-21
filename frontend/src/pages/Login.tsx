@@ -12,8 +12,8 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/api/users/login', {
-        correo: email,
-        contraseña: password,
+        email: email,
+        password: password,
       });
       console.log('Respuesta del backend:', response.data);
       // Obtener el token y el rol del usuario de la respuesta
@@ -28,6 +28,8 @@ const Login: React.FC = () => {
         navigate('/admin');
       } else if (permisos === 'user') {
         navigate('/user');
+      } else if (permisos === 'seller') {
+        navigate('/seller');
       } else {
         setError('Rol no válido');
       }
