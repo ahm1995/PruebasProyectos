@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  # Contenedor para MongoDB
+  mongodb:
+    image: mongo:latest           # Usa la imagen oficial de MongoDB
+    container_name: api-pruebas    # Nombre del contenedor de MongoDB
+    ports:
+      - "27017:27017"              # Expone el puerto 27017 para MongoDB
+    volumes:
+      - mongo-data:/data/db        # Almacena datos persistentes en un volumen Docker
+
+  # Contenedor para la API
+  api:
+    build:
+      context: ./backend                   # Dockerfile en el directorio actual
+    container_name: node-api        # Nombre del contenedor de la API
+    ports:
+      - "3000:3000"                # Expone el puerto 3000
+    depends_on:
+      - mongodb                    # La API depende de MongoDB
+    environment:
+      - MONGODB_URI=${MONGODB_URI_DOCKER}  # Conexión a MongoDB
+      - DOCKER=true
+
+# Definir el volumen para MongoDB
+volumes:
+  mongo-data:
