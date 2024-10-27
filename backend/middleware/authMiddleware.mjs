@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
+import jwt from "jsonwebtoken"
 
 // Middleware para verificar el token JWT
-exports.verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   const token = req.headers['authorization'];
 
   if (!token) {
@@ -21,7 +21,7 @@ exports.verifyToken = (req, res, next) => {
 };
 
 // Middleware para verificar si el usuario es admin
-exports.verifyAdmin = (req, res, next) => {
+export const verifyAdmin = (req, res, next) => {
   if (req.user.userRole !== 'admin') {
     return res.status(403).json({ message: 'Acceso denegado: se requieren userRole de administrador' });
   }

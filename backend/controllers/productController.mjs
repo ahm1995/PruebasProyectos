@@ -1,19 +1,18 @@
-const Product = require("../models/productModel");
+import Product from "../models/productModel.mjs"; // Asegúrate de que la extensión sea .mjs
 
 // Crear un producto nuevo
-exports.createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, categoryId, images, link, stock } =
-      req.body;
+    const { name, description, price, categoryId, images, link, stock } = req.body;
 
-    //Validaciones
+    // Validaciones
     if (
       !name ||
       !description ||
       !price ||
       !categoryId ||
       !images ||
-      link ||
+      !link ||
       !stock
     ) {
       return res
@@ -21,7 +20,7 @@ exports.createProduct = async (req, res) => {
         .json({ message: "Todos los campos son obligatorios " });
     }
 
-    //Crear el nuevo producto
+    // Crear el nuevo producto
     const newProduct = new Product({
       name,
       description,
@@ -37,7 +36,7 @@ exports.createProduct = async (req, res) => {
       status: true,
     });
 
-    //Guardar el nuevo producto en la base de datos
+    // Guardar el nuevo producto en la base de datos
     await newProduct.save();
 
     res.status(201).json({ message: "Producto creado exitosamente" });
@@ -46,9 +45,8 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-//Ver todos los productos
-
-exports.getProducts = async (req, res) => {
+// Ver todos los productos
+export const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
@@ -57,7 +55,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-exports.getProductBtId = async (req, res) => {
+export const getProductBtId = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -68,4 +66,3 @@ exports.getProductBtId = async (req, res) => {
     res.status(500).json({ message: "Error al obtener el producto", error });
   }
 };
-

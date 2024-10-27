@@ -1,8 +1,9 @@
-const express = require("express");
-const multer = require("multer");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const dotenv = require("dotenv");
+import express from "express";
+import multer from "multer";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import dotenv from "dotenv";
 
+// Cargar configuración de variables de entorno
 dotenv.config();
 
 const uploadRouter = express.Router();
@@ -38,4 +39,5 @@ uploadRouter.post("/", upload.single("file"), async (req, res) => {
   }
 });
 
-module.exports = uploadRouter;
+// Exportar el router como exportación predeterminada
+export default uploadRouter;

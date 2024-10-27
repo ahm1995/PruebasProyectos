@@ -1,4 +1,4 @@
-exports.addLoginRecord = async (Id, db) => {
+export const addLoginRecord = async (Id, db) => {
     try {
       // Crear el nuevo cambio con la fecha actual
       const newChange = {

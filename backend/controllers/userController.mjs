@@ -1,9 +1,10 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
-const { addLoginRecord } = require("../services/loggingRecords");
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.mjs"; // Asegúrate de que la extensión sea .mjs
+import { addLoginRecord } from "../services/loggingRecords.mjs"; // Asegúrate de que la extensión sea .mjs
+
 // Crear un nuevo usuario
-exports.createUser = async (req, res) => {
+export const createUser = async (req, res) => {
   try {
     const {
       firstName,
@@ -62,7 +63,7 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -100,7 +101,6 @@ exports.loginUser = async (req, res) => {
       },
     });
 
-
     addLoginRecord(user._id, User);
   } catch (error) {
     res.status(500).json({ message: "Error al iniciar sesión", error });
@@ -108,7 +108,7 @@ exports.loginUser = async (req, res) => {
 };
 
 // Obtener todos los usuarios (solo admins)
-exports.getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -118,7 +118,7 @@ exports.getUsers = async (req, res) => {
 };
 
 // Obtener un usuario por ID (solo admins)
-exports.getUserById = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -131,10 +131,9 @@ exports.getUserById = async (req, res) => {
 };
 
 // Modificar un usuario por ID (solo admins)
-exports.updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   try {
-    const { firstName, lastName, phoneNumber, email, userRole, status } =
-      req.body;
+    const { firstName, lastName, phoneNumber, email, userRole, status } = req.body;
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
