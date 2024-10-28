@@ -30,8 +30,11 @@ mongoose
   .catch((error) => console.error("Error al conectar a MongoDB:", error));
 
 // Importar rutas usando la sintaxis de importación
-import userRoutes from "./routes/userRoutes.mjs"; // Asegúrate de que la extensión sea .mjs
-app.use("/api/users", userRoutes);
+import userRouter from "./routes/userRoutes.mjs"; // Asegúrate de que la extensión sea .mjs
+app.use("/api/users", userRouter);
+
+import employeeRouter from "./routes/employeeRoutes.mjs";
+app.use("/api/employee", employeeRouter)
 
 import productRoutes from "./routes/productRoutes.mjs"; // Asegúrate de que la extensión sea .mjs
 app.use("/api/product", productRoutes);
