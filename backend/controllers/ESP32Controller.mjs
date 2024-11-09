@@ -4,9 +4,9 @@ export const createRecord = async (req, res) => {
   try {
     const { UID } = req.body;
 
-    //const existingRecord = await ESP32.findOne({ UID });
+    const existingRecord = await ESP32.findOne({ UID });
 
-    if (true) {
+    if (!existingRecord) {
       const newRecord = new ESP32({ UID });
       await newRecord.save();
       res.status(201).json({ message: "Registro exitoso" });
