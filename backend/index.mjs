@@ -42,6 +42,9 @@ app.use("/api/product", productRoutes);
 import uploadRoutes from "./routes/uploadRoutes.mjs"; // Asegúrate de que la extensión sea .mjs
 app.use("/api/upload", uploadRoutes); // Asigna un prefijo para la ruta de carga de archivos
 
+import ESP32Router from "./routes/ESP32Routes.mjs";
+app.use("/api/record", ESP32Router)
+
 // Condicional para entorno local
 if (process.env.IS_LOCAL) {
   app.listen(PORT, () => {
