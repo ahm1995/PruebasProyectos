@@ -5,17 +5,24 @@ const ESP32Schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  UID: {
-    type: String,
-  },
-  // detections: [
-  //   {
-  //     detectedAt: {
-  //       type: Date,
-  //       default: Date.now(),
-  //     },
-  //   },
-  //],
+  temp: [
+    {
+      detection: {type: Number},
+      time: {type: Date}
+    }
+  ],
+  hum: [
+    {
+      detection: {type: Number},
+      time: {type: Date}
+    }
+  ],
+  light: [
+    {
+      detection: {type: Number},
+      time: {type: Date}
+    }
+  ]
 });
 
 const ESP32 = mongoose.model("ESP32", ESP32Schema);
